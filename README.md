@@ -1,6 +1,7 @@
 # Final Project Kelompok 1
-# SBA Loan Approval Analysis Project
-# By Payrangers
+
+## Git Hub URL
+<https://github.com/amelianisrinah/kelompok1.git>
 
 ## Background
 Dataset Introduction & Problem Statement :
