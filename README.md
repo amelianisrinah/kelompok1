@@ -167,7 +167,52 @@ GrAppv mampu membedakan PIF dan CHGOFF
 
 SBA_Appv mampu membedakan PIF dan CHGOFF
 
-## Data Pre Processing
+## Stage 2 (Data Pre Processing)
+
+#### Data Cleansing
+**Handling Missing Values**
+Terdapat 1.6% null values (di luar chgoffdate) dari keseluruhan data maka hal yang terbaik dilakukan adalah dengan mendrop baris dengan null values daripada melakukan imputasi. Berikut beberapa kolom yang memiliki null values:
+- 'State'
+- 'BankState'
+- 'LowDoc'
+- 'RevLineCr'
+- 'DisbursementDate'
+- 'MIS_Status'
+
+**Handling Error Values**
+Beberapa kolom yang memiliki error values:
+- 'NewExist'
+- 'RevlineCr'
+- 'Term'
+- 'Noemp'
+
+**Handling Duplicated Data**
+Tidak terdapat data duplicate
+
+#### Feature Encoding
+- 'NewExist' 
+- 'RevlineCr'
+- 'IsDefault' dari kolom 'MIS_Status'
+
+#### Feature Enginering
+
+**Feature Extraction**
+- 'Real Estate', Apakah pinjaman memiliki term lebih dari 240 bulan
+- 'SBA_AppvPct', Persentase SBA Approved dari Gross Approved
+- 'StateSame', Apakah lokasi perusahaan dan bank pinjam sama
+- 'DefRateState', Default rate per state
+- 'Industry', Industri mengacu pada kode NAICS
+- 'DefRateIndustry', Default rate per industry
+- 'IsFranchise', Apakah perusahaan peminjam merupakan Franchise
+- 'Recession', Apakah perusahaan aktif ketika masa resesi
+
+**Feature Selection**
+Terdapat beberapa fitur yang didrop karena tidak relevan, yaitu:
+['LoanNr_ChkDgt', 'Name', 'City', 'State', 'Zip', 'Bank', 'BankState','NAICS', 'ApprovalDate', 'ApprovalFY','FranchiseCode', 'UrbanRural',
+'ChgOffDate', 'DisbursementDate', 'DisbursementGross', 'BalanceGross', 'MIS_Status', 'ChgOffPrinGr','SBA_Appv','Industry']
+
+**Handling Outliers**
+Handling outliers dilakukan pada 'GrAppv','DisbursementGross','SBA_Appv
 
 ## Modelling
 
