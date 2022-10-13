@@ -194,6 +194,7 @@ Tidak terdapat data duplicate
 - 'NewExist' 
 - 'RevlineCr'
 - 'IsDefault' dari kolom 'MIS_Status'
+- 'IsRetainedJob'
 
 #### Feature Enginering
 
@@ -213,10 +214,61 @@ Terdapat beberapa fitur yang didrop karena tidak relevan, yaitu:
 'ChgOffDate', 'DisbursementDate', 'DisbursementGross', 'BalanceGross', 'MIS_Status', 'ChgOffPrinGr','SBA_Appv','Industry']
 
 **Handling Outliers**
-Handling outliers dilakukan pada 'GrAppv','DisbursementGross','SBA_Appv
+Handling outliers dilakukan pada 'Term','DisbursementGross'
+
+**Standardization**
+Melakukan standarisasi pada fitur yaitu 'BCTerm','SBA_AppvPct','DefRateState','DefRateIndustry','BCDisbursementGross'
+
+**Handling Imbalance**
+Menggunakan Oversampling SMOTE 0,5
 
 ## Modelling
+Kami memiliki class yang imbalance, meskipun telah dilakukan oversampling akan lebih baik menggunakan evaluasi model untuk class imbalance (AUC/F-1), dalam kasus ini kami menganggap kedua feature sama pentingnya, kami ingin menekan tingkat charge off namun kami juga tidak ingin salah memprediksi sehingga kehilangan terlalu banyak nasabah, karena dua hal ini sama penting maka kami akan fokus kepada nilai AUC untuk mengevaluasi model.
 
-## Evaluation
+Melakukan percobaan dengan 4 Algoritma
+
+**Decision Tree**
+AUC: 92.763 (6.640)
+**Random Forest**
+AUC: 96.248 (0.972)
+**Adaboost**
+AUC: 95.312 (0.775)
+**XGboost**
+AUC: 96.429 (0.648)
+
+**Dilihat dari nilai AUC-nya model XGBoost merupakan yang paling baik dengan gap antara AUC train dan test yang sangat kecil sehingga kami memutuskan model yang paling baik untuk memprediksi target adalah XGBoost.**
+
+**Feature Importance**
+![image](https://user-images.githubusercontent.com/114790120/195608072-7b1e9731-311b-43ea-ae09-fe0936965ecf.png)
+
+## Insight Dari Fitur-fitur terpenting
+
+**Term**
+![image](https://user-images.githubusercontent.com/114790120/195608532-b54af48a-eede-4f57-8241-c95aa22cce8b.png)
+
+Semakin lama waktu pinjaman tingkat charge offnya semakin rendah, hal ini dikarenakan semakin lama jangka waktu pinjaman maka cicilan yang akan dibayarkan setiap bulan akan lebih sedikit sehingga meringankan kreditur dalam membayar pinjamannya dan akan mengurangi kemungkinan gagal bayar. Apabila kreditur terdeteksi charge off salah satu solusi yang dapat ditawarkan adalah dengan menawarkan jangka waktu pinjamannya menjadi lebih lama agar dapat meringankan kreditur, selain itu jangka waktu yang lebih lama juga akan lebih menguntungkan untuk bank karena jumlah revenue dari bunga yang diperoleh akan lebih tinggi.
+
+
+**UrbanRural**
+
+Reason : Profesor Sekolah Bisnis Universitas Kansas Bob DeYoung menyebutkan bank  selalu mengandalkan hard and soft information dalam memutuskan kelayakan pinjaman. Tetapi di masyarakat pedesaan, hard information tentang kelayakan pinjaman bisa jadi sulit didapat. Misalnya, usaha kecil pedesaan cenderung tidak memiliki laporan keuangan yang diaudit yang mengurangi jumlah hard information tentang kelayakan kredit mereka. Namun, merutnya komunitas pedesaan lebih erat daripada komunitas perkotaan, dan jaringan informasi pribadi ini meluas ke komunitas bisnis pedesaan juga. Ini memberi bank pedesaan sumbangan soft information tentang bisnis dan pengusaha lokal. Bank jelas menggunakan informasi ini dengan baik, karena dibuktikan dengan tingkat default yang rendah pada pinjaman mereka.
+
+Recommendation : 
+- Fokus bisnis bisa diperluas untuk daerah Desa, dengan alasan dapat menambah creditur dan pemasukan, disamping itu dapat me-reduce cost dikarenakan fokus panawaran bisnis untuk daerah yang potensi CHGOFF nya rendah.
+- Untuk darah Kota, dapat dibuat beberapa policy yang lebih ketat dengan tujuan meminimalisir angka CHGOFF dari kreditur yang berlokasi di Kota, seperti persyaratan dokumen bisnis yang lebih lengkap.
+
+Source : https://today.ku.edu/2012/11/06/loan-default-rates-lower-rural-communities
+
+**StateSame**
+Reason : Lokasi bank dan kreditur yang sama memiliki tingkat charge off yang lebih rendah, melayani pinjaman untuk bisnis di negara bagian lain akan lebih sulit karena proses pemantauan bisnis dan proses mendapatkan informasi-informasi untuk menentukan kelayakannya pun akan menjadi lebih sulit.
+
+Recommendation
+
+SBA dapat merekomendasikan bank berdasarkan state yang sama kepada calon kreditur untuk menurunkan kemungkinan charge off.
+Memperbaiki policy khusus untuk peminjam yang mengajukan pinjaman pada bank dengan negara bagian yang berbeda.
+Bank dapat berforkus pada calon kreditur yang berlokasi sama dengan bank dalam melakukan promosinya, sehingga mereduce cost untuk pemasaran.
+
+**SBA Approved Percentage**
+Sebagian pinjaman yang masuk merupakan pinjaman yang mendapatkan jaminan 50% dari SBA yang termasuk ke dalam program SBA Express. Pada programini keputusan kelayakan dibuat oleh pemberi pinjaman (Bank) bukan SBA sehingga pinjaman ini tidak memerlukan dokumen-dokumen yang disyaratkan SBA, pinjaman akan diproses dalam 36 jam. Pinjaman yang masuk kategori ini juga memiliki tingkat charge off yang tinggi. Asumsi kami adalah bahwa sebagian besar bisnis memilih untuk menggunakan program SBA Express karena lebih mudah untuk mendapatkan persetujuan pinjaman dalam waktu yang lebih singkat, sayangnya dalam proses persetujuan ini penilaian kelayakan yang dilakukan bank dalam waktu yang singkat terhadap bisnis kurang baik sehingga banyaknya pinjaman yang gagal bayar, khusus untuk program SBA Express yang membutuhkan waktu cepat model akan sangat membantu dalam memprediksi kelayakan bisnis.
 
 
